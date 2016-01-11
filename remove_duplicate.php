@@ -1,27 +1,22 @@
 <?php
 
-define('DS', DIRECTORY_SEPARATOR);
+require(__DIR__ . '/functions_inc.php');
 
-$workdir = __DIR__ . DIRECTORY_SEPARATOR;
+$files_hash = json_decode(file_get_contents(CUR_DIR . 'hash.json'), true);
 
-$output_dir = $workdir . 'Exports' . DS;
+if (!isset($files_hash) || !is_array($files_hash)) {
+    die();
+}
 
-chdir($output_dir);
-$files = glob("*");
+$exists = array();
 
-$hashs = array();
-$hashs_to_files = array();
-
-foreach ($files as $filename) {
-    $path = $output_dir . $filename;
-    if (!is_file($path)) continue;
-    $md5 = md5_file($path);
-
-    if (isset($hashs_to_files[$md5])) {
-        unlink($path);
-        print("remove {$path}\n");
+foreach ($files_hash as $path => $hash) {
+    if (isset($exists[$hash])) {
+        printf("remove duplicate file '%s'\n", $path);
+        // unlink($path);
     } else {
-        $hashs[$path] = $md5;
-        $hashs_to_files[$md5] = $path;
+        $exists[$hash] = $path;
     }
 }
+
+print("DONE\n\n");

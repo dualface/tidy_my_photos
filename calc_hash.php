@@ -19,7 +19,6 @@ EOT;
 $argc = count($argv);
 
 $source_dir = CUR_DIR . 'Photos';
-$output_dir = CUR_DIR . 'Photos';
 
 array_shift($argv);
 while (count($argv)) {
@@ -51,6 +50,11 @@ while (count($argv)) {
 if (!is_dir($source_dir)) {
     $source_dir = realpath(CUR_DIR . $source_dir);
 }
+
+if (!isset($output_dir)) {
+    $output_dir = $source_dir;
+}
+
 if (!is_dir($output_dir)) {
     $output_dir = realpath(CUR_DIR . $output_dir);
 }
